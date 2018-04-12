@@ -30,11 +30,13 @@ void sendnlmsg(char *message)
 	struct nlmsghdr *nlh;
 	int len = NLMSG_SPACE(MAX_MSGSIZE);
 	int slen = 0;
-	if (!message || !nl_sk)
+	if (!message || !nl_sk) {
 		return ;
+	}
 	skb_1 = alloc_skb(len, GFP_KERNEL);
-	if (!skb_1)
+	if (!skb_1) {
 		printk(KERN_ERR "my_net_link:alloc_skb_1 error\n");
+	}
 	slen = strlen(message);
 	nlh = nlmsg_put(skb_1, 0, 0, 0, MAX_MSGSIZE, 0);
 
@@ -44,11 +46,10 @@ void sendnlmsg(char *message)
 	message[slen] = '\0';
 	memcpy(NLMSG_DATA(nlh), message, slen+1);
 
+
 	netlink_unicast(nl_sk, skb_1, pid, MSG_DONTWAIT);
 
 }
-
-
 void nl_data_ready(struct sk_buff *__skb)
 {
 	struct sk_buff *skb;
@@ -57,13 +58,13 @@ void nl_data_ready(struct sk_buff *__skb)
 	skb = skb_get (__skb);
 	if (skb->len >= NLMSG_SPACE(0)) {
 		nlh = nlmsg_hdr(skb);
+
 		memcpy(str, NLMSG_DATA(nlh), sizeof(str));
 		pid = nlh->nlmsg_pid;
 		kfree_skb(skb);
 	}
 
 }
-
 
 int netlink_init(void)
 {
@@ -76,7 +77,7 @@ int netlink_init(void)
 
 	nl_sk = netlink_kernel_create(&init_net, NETLINK_TEST, &netlink_cfg);
 
-	if (!nl_sk) {
+	if (!nl_sk)  {
 		printk(KERN_ERR "my_net_link: create netlink socket error.\n");
 		return 1;
 	}
@@ -86,7 +87,7 @@ int netlink_init(void)
 
 void netlink_exit(void)
 {
-	if (nl_sk != NULL) {
+	if (nl_sk != NULL)  {
 		sock_release(nl_sk->sk_socket);
 	}
 
