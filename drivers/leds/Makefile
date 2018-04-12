@@ -67,3 +67,7 @@ obj-$(CONFIG_LEDS_DAC124S085)		+= leds-dac124s085.o
 
 # LED Triggers
 obj-$(CONFIG_LEDS_TRIGGERS)		+= trigger/
+
+#add for flashlight qihaiqian.wt ++
+obj-y		+=leds-msm-gpio-flash.o
+#add end
