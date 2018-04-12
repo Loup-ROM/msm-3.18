@@ -63,6 +63,8 @@
 #include <asm/efi.h>
 #include <asm/system_misc.h>
 
+extern void pstore_ram_reserve_memory(void);
+
 unsigned int boot_reason;
 EXPORT_SYMBOL(boot_reason);
 
@@ -355,6 +357,10 @@ void __init setup_arch(char **cmdline_p)
 	cpu_read_bootcpu_ops();
 	smp_init_cpus();
 	smp_build_mpidr_hash();
+
+#ifdef CONFIG_PSTORE
+	pstore_ram_reserve_memory();
+#endif
 
 #ifdef CONFIG_ARM64_SW_TTBR0_PAN
 	/*
