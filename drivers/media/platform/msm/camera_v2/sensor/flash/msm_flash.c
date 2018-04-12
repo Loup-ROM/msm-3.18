@@ -1,5 +1,5 @@
 /* Copyright (c) 2009-2016, The Linux Foundation. All rights reserved.
- * Copyright (C) 2017 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -531,6 +531,35 @@ static int32_t msm_flash_low(
 	return 0;
 }
 
+static int32_t msm_gpio_flash_low(
+		struct msm_flash_ctrl_t *flash_ctrl,
+		struct msm_flash_cfg_data_t *flash_data)
+{
+	CDBG("Enter\n");
+	gpio_direction_output(93, 1);
+	return 0;
+}
+
+static int32_t msm_gpio_flash_high(
+		struct msm_flash_ctrl_t *flash_ctrl,
+		struct msm_flash_cfg_data_t *flash_data)
+{
+	CDBG("Enter\n");
+	gpio_direction_output(90, 1);
+	return 0;
+}
+
+static int32_t msm_gpio_flash_off(
+		struct msm_flash_ctrl_t *flash_ctrl,
+		struct msm_flash_cfg_data_t *flash_data)
+{
+	CDBG("Enter\n");
+	gpio_direction_output(90, 0);
+	gpio_direction_output(93, 0);
+	return 0;
+}
+
+int flag_led = 0;
 
 int32_t wt_flash_flashlight(bool boolean)
 {
@@ -628,6 +657,14 @@ static int32_t msm_flash_config(struct msm_flash_ctrl_t *flash_ctrl,
 
 	CDBG("Enter %s type %d\n", __func__, flash_data->cfg_type);
 
+	if (flash_data->cfg_type == 2 && flag_led > 0) {
+		flag_led--;
+	} else if (flash_data->cfg_type == 3) {
+		flag_led++;
+	} else if (flash_data->cfg_type == 1) {
+		flag_led = 0;
+	}
+	
 	switch (flash_data->cfg_type) {
 	case CFG_FLASH_INIT:
 		rc = msm_flash_init(flash_ctrl, flash_data);
@@ -906,7 +943,7 @@ static int32_t msm_flash_get_dt_data(struct device_node *of_node,
 	struct msm_flash_ctrl_t *fctrl)
 {
 	int32_t rc = 0;
-
+	struct device_node *switch_src_node_pmic = NULL;
 	CDBG("called\n");
 
 	if (!of_node) {
@@ -924,10 +961,17 @@ static int32_t msm_flash_get_dt_data(struct device_node *of_node,
 	CDBG("subdev id %d\n", fctrl->subdev_id);
 
 	fctrl->flash_driver_type = FLASH_DRIVER_DEFAULT;
-	rc = msm_flash_get_pmic_source_info(of_node, fctrl);
-	if (rc < 0) {
-		pr_err("%s:%d msm_flash_get_pmic_source_info failed rc %d\n", __func__, __LINE__, rc);
-		return rc;
+	
+	/* Read the flash and torch source info from device tree node */
+	switch_src_node_pmic = of_parse_phandle(of_node, "qcom,switch-source", 0);
+	if (switch_src_node_pmic) {
+
+		rc = msm_flash_get_pmic_source_info(of_node, fctrl);
+		if (rc < 0) {
+			pr_err("%s:%d msm_flash_get_pmic_source_info failed rc %d\n",
+				__func__, __LINE__, rc);
+			return rc;
+		}
 	}
 	if (fctrl->flash_driver_type == FLASH_DRIVER_PMIC)
 		return 0;
@@ -1168,9 +1212,9 @@ static struct msm_flash_table msm_gpio_flash_table = {
 	.func_tbl = {
 		.camera_flash_init = msm_flash_gpio_init,
 		.camera_flash_release = msm_flash_release,
-		.camera_flash_off = msm_flash_off,
-		.camera_flash_low = msm_flash_low,
-		.camera_flash_high = msm_flash_high,
+		.camera_flash_off = msm_gpio_flash_off,
+		.camera_flash_low = msm_gpio_flash_low,
+		.camera_flash_high = msm_gpio_flash_high,
 	},
 };
 
