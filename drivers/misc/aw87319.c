@@ -23,6 +23,7 @@
 #include <linux/proc_fs.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
+#include <linux/of_gpio.h>
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
@@ -32,17 +33,17 @@
 #include <linux/wakelock.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//We changed the gpio to the one that appeared in dts.
-//Improve ideas: read gpio pin from qcom,ext_pa_spk_aw87319_rst directly. 
-#define AW87319_RST      0x7c //48
-
 #define AW87319_I2C_NAME		"AW87319_PA"
 #define AW87319_I2C_BUS		0
 #define AW87319_I2C_ADDR	0x58
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static unsigned char AW87319_HW_ON(void);
 static unsigned char AW87319_HW_OFF(void);
+static unsigned char AW87319_SW_ON(void);
+static unsigned char AW87319_SW_OFF(void);
 unsigned char AW87319_Audio_Speaker(void);
+unsigned char AW87319_Audio_Receiver(void);
+unsigned char AW87319_Audio_OFF(void);
 static ssize_t AW87319_get_reg(struct device* cd,struct device_attribute *attr, char* buf);
 static ssize_t AW87319_set_reg(struct device* cd, struct device_attribute *attr,const char* buf, size_t len);
 static ssize_t AW87319_set_swen(struct device* cd, struct device_attribute *attr,const char* buf, size_t len);
@@ -56,25 +57,33 @@ static DEVICE_ATTR(hwen, 0660, AW87319_get_hwen,  AW87319_set_hwen);
 
 struct i2c_client *AW87319_pa_client;
 
-static int i2c_ok = 0;
+//Read gpio pin from qcom,ext_pa_spk_aw87319_rst directly. 
+int AW87319_rst;
+
+struct pinctrl *AW87319ctrl = NULL;
+struct pinctrl_state *AW87319_rst_high = NULL;
+struct pinctrl_state *AW87319_rst_low = NULL;
+
+char Spk_Pa_Flag[] = " ";
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GPIO Control
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static void AW87319_pa_pwron(void)
 {
-    printk("%s enter\n", __func__);
-	gpio_direction_output(AW87319_RST,1);
-	gpio_set_value(AW87319_RST,0);
-    msleep(1);
-    gpio_set_value(AW87319_RST,1);
-    msleep(10);
-    printk("%s out\n", __func__);
+	pr_debug("%s enter\n", __func__);
+	gpio_direction_output(AW87319_rst,false);
+	msleep(1);
+	gpio_direction_output(AW87319_rst, true);
+	msleep(10);
+	pr_debug("%s out\n", __func__);
 }
 
 static void AW87319_pa_pwroff(void)
 {
-	gpio_set_value(AW87319_RST,0);
+	pr_debug("%s enter\n", __func__);
+	gpio_direction_output(AW87319_rst, false);
+	msleep(1);
 }
 
 
@@ -97,6 +106,11 @@ unsigned char I2C_write_reg(unsigned char addr, unsigned char reg_data)
 
 	wdbuf[0] = addr;
 	wdbuf[1] = reg_data;
+
+	if (NULL == AW87319_pa_client) {
+		pr_err("msg %s AW87319_pa_client is NULL\n", __func__);
+		return -EPERM;
+	}
 
 	ret = i2c_transfer(AW87319_pa_client->adapter, msgs, 1);
 	if (ret < 0)
@@ -127,6 +141,11 @@ unsigned char I2C_read_reg(unsigned char addr)
 
 	rdbuf[0] = addr;
 
+	if (NULL == AW87319_pa_client) {
+		pr_err("msg %s aw87319_pa_client is NULL\n", __func__);
+		return -EPERM;
+	}
+
 	ret = i2c_transfer(AW87319_pa_client->adapter, msgs, 2);
 	if (ret < 0)
 		pr_err("msg %s i2c read error: %d\n", __func__, ret);
@@ -138,16 +157,24 @@ unsigned char I2C_read_reg(unsigned char addr)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AW87319 PA
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+unsigned char AW87319_Audio_Receiver(void)
+{
+	AW87319_HW_ON();
+
+	I2C_write_reg(0x05, 0x03);
+
+	I2C_write_reg(0x01, 0x02);
+	I2C_write_reg(0x01, 0x06);
+
+	return 0;
+}
+
 unsigned char AW87319_Audio_Speaker(void)
 {
-	if(i2c_ok < 0)
-	{
-	  return 0;
-	}
 	AW87319_HW_ON();
 	I2C_write_reg(0x02, 0x28);		// BATSAFE
-	I2C_write_reg(0x03, 0x07);		// BOV
-	I2C_write_reg(0x04, 0x07);		// BP
+	I2C_write_reg(0x03, 0x05);		// BOV
+	I2C_write_reg(0x04, 0x04);		// BP
 	I2C_write_reg(0x05, 0x0D);		// Gain
 	I2C_write_reg(0x06, 0x03);		// AGC3_Po
 	I2C_write_reg(0x07, 0x52);		// AGC3
@@ -161,12 +188,11 @@ unsigned char AW87319_Audio_Speaker(void)
 
 unsigned char AW87319_Audio_OFF(void)
 {
-	if(i2c_ok < 0)
-	{
-	  return 0;
-	}
+	I2C_write_reg(0x01, 0x00);
 	AW87319_HW_OFF();
+
 	return 0;
+
 }
 unsigned char AW87319_SW_ON(void)
 {
@@ -303,16 +329,31 @@ static int AW87319_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	unsigned char reg_value;
 	unsigned char cnt = 5;
 	int err = 0;
-	printk("AW87319_i2c_Probe");
+
+	pr_debug("%s Enter\n", __func__);
+
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		err = -ENODEV;
 		goto exit_check_functionality_failed;
 	}
 
+		AW87319_rst = of_get_named_gpio(client->dev.of_node, "qcom,ext_pa_spk_aw87319_rst", 0);
+	if (AW87319_rst < 0) {
+		err = -ENODEV;
+		goto exit_gpio_get_failed;
+	}
+	if (gpio_request_one(AW87319_rst, GPIOF_DIR_OUT , "spk_enable")) {
+		pr_err("%s: request spk_pa_gpio  fail!\n", __func__);
+		goto exit_gpio_request_failed;
+	}
+
+	pr_debug("%s: aw87319_rst = %d \n", __func__, AW87319_rst);
+
+
 	AW87319_pa_client = client;
 
-	AW87319_pa_pwron();
+	AW87319_HW_ON();
 	msleep(10);
 
 	while(cnt>0)
@@ -331,8 +372,11 @@ static int AW87319_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	if(!cnt)
 	{
 		err = -ENODEV;
-		i2c_ok = err;
+		
 		AW87319_HW_OFF();
+		strncpy(Spk_Pa_Flag, "S88537A12", 9);
+		pr_err("%s:can not find AW87319, board  is S88537A12\n!", __func__);
+
 		goto exit_create_singlethread;
 	}
 
@@ -343,6 +387,9 @@ static int AW87319_i2c_probe(struct i2c_client *client, const struct i2c_device_
 
 exit_create_singlethread:
 	AW87319_pa_client = NULL;
+exit_gpio_request_failed:
+	gpio_free(AW87319_rst);
+exit_gpio_get_failed:
 exit_check_functionality_failed:
 	return err;
 }
@@ -354,7 +401,7 @@ static int AW87319_i2c_remove(struct i2c_client *client)
 }
 
 static const struct i2c_device_id AW87319_i2c_id[] = {
-	{"aw87319", 0},
+	{AW87319_I2C_NAME, 0},
 	{},
 };
 
@@ -386,7 +433,7 @@ static int __init AW87319_pa_init(void) {
 	printk("AW87319 PA Init\n");
 
 	ret = i2c_add_driver(&AW87319_i2c_driver);
-	if (ret != 0) {
+	if (ret) {
 		printk("[%s] failed to register AW87319 i2c driver.\n", __func__);
 		return ret;
 	} else {
