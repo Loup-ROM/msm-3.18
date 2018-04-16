@@ -135,6 +135,9 @@ struct mmc_ext_csd {
 	u8			pre_eol_info;		/* 267 */
 	u8			device_life_time_est_typ_a;	/* 268 */
 	u8			device_life_time_est_typ_b;	/* 269 */
+/* ToDo: Replace xiaomi's modification with upstream one, now it's duplicated. */
+	u8			life_time_est_typ_a;    /* 268 */
+	u8			life_time_est_typ_b;    /* 269 */
 
 	u8			fw_version;		/* 254 */
 	unsigned int            feature_support;

@@ -552,6 +552,8 @@ struct mmc_host {
 #define MMC_BUSRESUME_MANUAL_RESUME	(1 << 0)
 #define MMC_BUSRESUME_NEEDS_RESUME	(1 << 1)
 
+	bool 			ignore_bus_resume_flags;
+
 	unsigned int		sdio_irqs;
 	struct task_struct	*sdio_irq_thread;
 	bool			sdio_irq_pending;
@@ -567,9 +569,9 @@ struct mmc_host {
 	struct mmc_supply	supply;
 
 	struct dentry		*debugfs_root;
-
+#ifdef CONFIG_MMC_ERROR_STATUS
 	bool			err_occurred;
-
+#endif
 	struct mmc_async_req	*areq;		/* active async req */
 	struct mmc_context_info	context_info;	/* async synchronization info */
 
