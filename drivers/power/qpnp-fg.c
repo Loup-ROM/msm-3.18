@@ -4263,6 +4263,7 @@ static void check_gain_compensation(struct fg_chip *chip)
 static void fg_hysteresis_config(struct fg_chip *chip)
 {
 	int hard_hot = 0, hard_cold = 0;
+	int soft_hot = 0, soft_cold = 0;
 
 	soft_hot = get_prop_jeita_temp(chip, FG_MEM_SOFT_HOT);
 	soft_cold = get_prop_jeita_temp(chip, FG_MEM_SOFT_COLD);

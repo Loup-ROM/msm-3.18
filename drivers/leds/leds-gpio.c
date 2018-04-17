@@ -22,6 +22,8 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
+#include <linux/pm_qos.h>
+
 #if defined(CONFIG_IR_GPIO)
 #include <linux/hrtimer.h>
 #include <linux/pinctrl/consumer.h>

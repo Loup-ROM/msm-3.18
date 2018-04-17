@@ -5037,6 +5037,25 @@ static bool is_usbin_uv_high(struct smbchg_chip *chip)
 	return reg &= USBIN_UV_BIT;
 }
 
+#define call_current_max 900
+static void smbchg_set_calling_current(struct smbchg_chip *chip)
+{
+        enum power_supply_type usb_supply_type;
+        char *usb_type_name = "null";
+
+        read_usb_type(chip, &usb_type_name, &usb_supply_type);
+        pr_smb(PR_MISC, "chip->call_state =%d, usb_supply_type =%d\n", chip->call_state, usb_supply_type);
+        if ((chip->call_state == 0)) {
+                if (usb_supply_type == POWER_SUPPLY_TYPE_USB_DCP)  {
+                        pr_smb(PR_MISC, "call_icl_voltage vote 900mA when calling\n");
+                        vote(chip->usb_icl_votable, CALL_ICL_VOTER, true, call_current_max);
+                }
+        } else {
+                pr_smb(PR_MISC, "call_icl_volter false");
+                vote(chip->usb_icl_votable, CALL_ICL_VOTER, false, 0);
+        }
+}
+
 #define HVDCP_NOTIFY_MS		2500
 static void handle_usb_insertion(struct smbchg_chip *chip)
 {
@@ -6196,25 +6215,6 @@ skip_current_for_non_sdp:
 	smbchg_vfloat_adjust_check(chip);
 
 	power_supply_changed(&chip->batt_psy);
-}
-
-#define call_current_max 900
-void smbchg_set_calling_current(struct smbchg_chip *chip)
-{
-	enum power_supply_type usb_supply_type;
-	char *usb_type_name = "null";
-
-	read_usb_type(chip, &usb_type_name, &usb_supply_type);
-	pr_smb(PR_MISC, "chip->call_state =%d, usb_supply_type =%d\n", chip->call_state, usb_supply_type);
-	if ((chip->call_state == 0)) {
-		if (usb_supply_type == POWER_SUPPLY_TYPE_USB_DCP)  {
-			pr_smb(PR_MISC, "call_icl_voltage vote 900mA when calling\n");
-			vote(chip->usb_icl_votable, CALL_ICL_VOTER, true, call_current_max);
-		}
-	} else {
-		pr_smb(PR_MISC, "call_icl_volter false");
-		vote(chip->usb_icl_votable, CALL_ICL_VOTER, false, 0);
-	}
 }
 
 static enum power_supply_property smbchg_battery_properties[] = {

@@ -163,8 +163,8 @@
 };
 &i2c_3 {
 	status = "ok";
-	ftech@38 {
-		compatible = "focaltech,5336";
+	focaltech@38 {
+		compatible = "focaltech,5x06";
 		reg = <0x38>;
 		interrupt-parent = <&tlmm>;
 		interrupts = <65 0x2008>;
@@ -176,30 +176,31 @@
 		pinctrl-0 = <&ts_int_active &ts_reset_active>;
 		pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
 		pinctrl-2 = <&ts_release>;
-		ftech,name = "ft5336";
-		ftech,family-id = <0x36>;
-		ftech,reset-gpio = <&tlmm 64 0x00>;
-		ftech,irq-gpio = <&tlmm 65 0x2008>;
-		ftech,display-coords = <0 0 720 1280>;
-		ftech,panel-coords = <0 0 720 1280>;
+		focaltech,name = "ft5336";
+		focaltech,family-id = <0x36>;
+		focaltech,reset-gpio = <&tlmm 64 0x00>;
+		focaltech,irq-gpio = <&tlmm 65 0x2008>;
+		focaltech,display-coords = <0 0 720 1280>;
+		focaltech,panel-coords = <0 0 720 1280>;
 
-		ftech,virtual-key1 = <139 140 2000>;
-		ftech,virtual-key2 = <172 360 2000>;
-		ftech,virtual-key3 = <158 580 2000>;
-		ftech,no-force-update;
-		ftech,i2c-pull-up;
-		ftech,group-id = <1>;
-		ftech,hard-reset-delay-ms = <20>;
-		ftech,soft-reset-delay-ms = <200>;
-		ftech,num-max-touches = <10>;
-		ftech,fw-delay-aa-ms = <30>;
-		ftech,fw-delay-55-ms = <30>;
-		ftech,fw-upgrade-id1 = <0x79>;
-		ftech,fw-upgrade-id2 = <0x18>;
-		ftech,fw-delay-readid-ms = <10>;
-		ftech,fw-delay-era-flsh-ms = <2000>;
-		ftech,fw-auto-cal;
-		ftech,ignore-id-check;
+		focaltech,virtual-key1 = <139 140 2000>;
+		focaltech,virtual-key2 = <172 360 2000>;
+		focaltech,virtual-key3 = <158 580 2000>;
+		focaltech,no-force-update;
+		focaltech,i2c-pull-up;
+		focaltech,group-id = <1>;
+		focaltech,hard-reset-delay-ms = <20>;
+		focaltech,soft-reset-delay-ms = <200>;
+		focaltech,num-max-touches = <10>;
+		focaltech,fw-delay-aa-ms = <30>;
+		focaltech,fw-delay-55-ms = <30>;
+		focaltech,fw-upgrade-id1 = <0x79>;
+		focaltech,fw-upgrade-id2 = <0x18>;
+		focaltech,fw-delay-readid-ms = <10>;
+		focaltech,fw-delay-era-flsh-ms = <2000>;
+		focaltech,fw-auto-cal;
+		focaltech,ignore-id-check;
+		focaltech,resume-in-workqueue;
 	};
 	goodix_ts@5d {
 		compatible = "goodix,gt9xx";
@@ -238,16 +239,18 @@
 };
 
 &soc {
-	gen-vkeys_ft {
-		compatible = "qcom,gen-vkeys";
-		label = "ft5346";
-		qcom,disp-maxx = <720>;
-		qcom,disp-maxy = <1280>;
-		qcom,panel-maxx = <720>;
-		qcom,panel-maxy = <2080>;
-		qcom,key-codes = <139 172 158>;
-		qcom,y-offset = <0>;
+	
+	gen-vkey {
+			compatible = "qcom,gen-vkeys";
+			label = "ft5x06_ts";
+			qcom,disp-maxx = <720>; //<0x2d0>;
+			qcom,disp-maxy = <1280>; //<0x500>;
+			qcom,panel-maxx = <720>; //<0x2d0>;
+			qcom,panel-maxy = <1458>; //<0x5b2>;
+			qcom,key-codes = <139 172 158>; //<0x8b 0xac 0x9e>;
+			qcom,y-offset = <0>; //<0x0>;
 	};
+
 	gen-vkeys_gt {
 		compatible = "qcom,gen-vkeys_gt";
 		label = "goodix-ts";

@@ -1601,6 +1601,7 @@ static int msm_otg_resume(struct msm_otg *motg)
 	}
 
 	if (motg->lpm_flags & CLOCKS_DOWN) {
+		unsigned long flags;
 		if (motg->phy_csr_clk) {
 			ret = clk_prepare_enable(motg->phy_csr_clk);
 			WARN(ret, "USB phy_csr_clk enable failed\n");

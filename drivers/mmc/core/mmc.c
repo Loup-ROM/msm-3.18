@@ -2385,7 +2385,7 @@ static int mmc_test_awake_ext_csd(struct mmc_host *host)
 
 static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
 {
-	int err = 0;
+	int err = 0, ret;
 
 	BUG_ON(!host);
 	BUG_ON(!host->card);
