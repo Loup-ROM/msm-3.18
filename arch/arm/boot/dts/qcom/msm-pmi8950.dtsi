@@ -601,7 +601,7 @@
 						"torch1_trigger";
 				qcom,max-current = <200>;
 				qcom,id = <1>;
-				qcom,current = <120>;
+				qcom,current = <100>;
 			};
 
 			pmi8950_torch2: qcom,torch_2 {

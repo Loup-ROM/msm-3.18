@@ -233,7 +233,9 @@
 	msm8920-pmi8940-qrd-sku7.dtb \
 	msm8920-pmi8950-ext-codec-cdp.dtb
 
-dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8950-qrd-sku7.dtb
+dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8950-qrd-sku7_S88536AA2.dtb
+	# Old manually created dtb.
+	#msm8940-pmi8950-qrd-sku7.dtb
 	# Extracted dtb
 	#msm8940-pmi8950-qrd-sku7-full.dtb
 #	msm8940-pmi8937-cdp.dtb \

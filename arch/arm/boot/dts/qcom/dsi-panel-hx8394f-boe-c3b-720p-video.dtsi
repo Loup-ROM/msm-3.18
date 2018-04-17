@@ -17,8 +17,8 @@
  * VERSION = "1.0"
  *---------------------------------------------------------------------------*/
 &mdss_mdp {
-	dsi_hx8394f_boe_720_vid: qcom,mdss_dsi_hx8394f_boe_720p_video {
-		qcom,mdss-dsi-panel-name = "hx8394F_HD720p_video_BOE";
+	dsi_hx8394f_boe_720_vid: qcom,mdss_dsi_hx8394f_boe_c3b_720p_video {
+		qcom,mdss-dsi-panel-name = "hx8394F_HD720p_video_BOE_c3b";
 		qcom,mdss-dsi-panel-controller = <&mdss_dsi0>;
 		qcom,mdss-dsi-panel-type = "dsi_video_mode";
 		qcom,mdss-dsi-panel-destination = "display_1";
@@ -44,11 +44,7 @@
 		qcom,mdss-dsi-border-color = <0>;
 		qcom,mdss-dsi-on-command = [39 01 00 00 00 00 04 B9 FF 83 94
 				05 01 00 00 78 00 02 11 00
-				05 01 00 00 14 00 02 29 00
-				39 01 00 00 00 00 02 51 FF
-				39 01 00 00 05 00 0A C9 13 00 13 1E 31 1E 00 91 00
-				39 01 00 00 05 00 02 55 00
-				39 01 00 00 00 00 02 53 2C];
+				05 01 00 00 14 00 02 29 00];
 		qcom,mdss-dsi-off-command = [05 01 00 00 32 00 02 28 00
 				05 01 00 00 78 00 02 10 00];
 		qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
@@ -78,14 +74,10 @@
 				39 01 00 00 01 00 2B C1 00 09 12 1B 24 2E 38 41 48 4F 56 5C 62 69 70 77 7E 85 8C 93 9B A2 A8 AF B6 BD C4 CC D3 DA E1 E8 F0 15 7C 62 A9 1B 8B 4C 2E 00
 				39 01 00 00 01 00 02 BD 00];
 		qcom,mdss-dsi-panel-gamma-command-state = "dsi_lp_mode";
-		qcom,mdss-dsi-panel-ce-std-command = [
-				39 01 00 00 05 00 02 55 00
-				39 01 00 00 0A 00 03 E4 01 00];
-		qcom,mdss-dsi-panel-ce-vivid-command = [
-				39 01 00 00 05 00 02 55 11
-				39 01 00 00 05 00 03 E4 01 42
-				39 01 00 00 01 00 20 E5 00 00 0B 08 01 00 00 00 00 00 00 05 1D 19 1F 05 ED 09 20 00 00 04 0B 02 01 08 08 07 02 04 02
-				39 01 00 00 01 00 16 E6 00 08 00 05 05 10 10 10 20 20 20 10 10 10 10 10 03 A0 01 0F 11];
+		qcom,mdss-dsi-panel-ce-std-command = [39 01 00 00 0A 00 03 E4 01 00];
+		qcom,mdss-dsi-panel-ce-vivid-command = [39 01 00 00 14 00 03 E4 01 42
+				39 01 00 00 14 00 20 E5 00 04 0B 08 01 00 00 00 00 00 00 05 1D 19 1F 05 ED 09 20 05 08 0A 0B 02 01 08 08 07 02 04 02
+				39 01 00 00 14 00 16 E6 00 08 00 05 05 10 10 10 20 20 20 10 10 10 10 10 03 B0 01 0F 11];
 		qcom,mdss-dsi-panel-ce-command-state = "dsi_lp_mode";
 		qcom,mdss-dsi-h-sync-pulse = <1>;
 		qcom,mdss-dsi-traffic-mode = "burst_mode";
@@ -96,29 +88,16 @@
 		qcom,mdss-dsi-lane-1-state;
 		qcom,mdss-dsi-lane-2-state;
 		qcom,mdss-dsi-lane-3-state;
-		qcom,mdss-dsi-panel-timings = [8C 1E 14 00 46 48 1A 22 18 03 04 00];
+		qcom,mdss-dsi-panel-timings = [8C 20 14 00 46 48 1A 22 18 03 04 00];
 		qcom,mdss-dsi-t-clk-post = <0x04>;
 		qcom,mdss-dsi-t-clk-pre = <0x1C>;
-
-		qcom,esd-check-enabled;
-		qcom,mdss-dsi-panel-status-command = [06 01 00 01 05 00 01 D9
-				06 01 00 01 05 00 01 09
-			];
-		qcom,mdss-dsi-panel-status-command-num = <2>;
-		qcom,mdss-dsi-panel-status-command-state = "dsi_hs_mode";
-		qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-		qcom,mdss-dsi-panel-status-read-length = <4 4>;
-		qcom,mdss-dsi-panel-status-valid-params = <1 3>;
-		qcom,mdss-dsi-panel-status-value =
-				<0x80 0x80 0x73 0x04 >,
-				<0x80 0x80 0x73 0x04 >;
-
-
-		qcom,mdss-dsi-bl-min-level = <1>;
-		qcom,mdss-dsi-bl-max-level = <4095>;
+		qcom,mdss-dsi-bl-min-level = <4>;
+		qcom,mdss-dsi-bl-max-level = <255>;
+		qcom,mdss-dsi-bl-pmic-pwm-frequency = <100>;
+		qcom,mdss-dsi-bl-pmic-bank-select = <0>;
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
-		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_pwm";
 		qcom,mdss-dsi-reset-sequence = <1 50>, <0 20>, <1 5>;
 		qcom,mdss-pan-physical-width-dimension = <62>;
 		qcom,mdss-pan-physical-height-dimension = <110>;
