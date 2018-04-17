@@ -7,6 +7,7 @@
  * Copyright (C) 2009 Samsung Electronics
  *			Author: Michal Nazarewicz (mina86@mina86.com)
  * Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2
@@ -1310,9 +1311,9 @@ rndis_qc_bind_config_vendor(struct usb_configuration *c, u8 ethaddr[ETH_ALEN],
 		goto fail;
 	}
 
-	_rndis_qc = rndis;
-
 	c->cdev->gadget->bam2bam_func_enabled = true;
+	
+	_rndis_qc = rndis;
 
 	return 0;
 
