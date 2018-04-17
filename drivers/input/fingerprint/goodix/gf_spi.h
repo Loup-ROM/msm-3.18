@@ -53,9 +53,9 @@ struct gf_key_map {
 
 static const char * const pctl_names[] = {
 
-	"goodixfp_reset_reset",
-	"goodixfp_reset_active",
-	"goodixfp_irq_active",
+	"goodix_reset_reset",
+	"goodix_reset_active",
+	"goodix_irq_active",
 };
 
 
