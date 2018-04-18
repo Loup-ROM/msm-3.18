@@ -1943,6 +1943,8 @@ static int msm_audrx_init(struct snd_soc_pcm_runtime *rtd)
 	INIT_DELAYED_WORK(&lineout_amp_dualmode, msm8x16_ext_spk_delayed_dualmode);
 
 	INIT_DELAYED_WORK(&lineout_hs_sw_enable, msm8952_ext_hs_delay_enable);
+
+	Set_Spk_PA_Id();
 #endif
 #endif
 	return 0;
