@@ -359,6 +359,7 @@ dtb-$(CONFIG_ARCH_MSM8940) += msm8940-pmi8950-qrd-sku7_S88536AA2.dtb
 	msm8909-1gb-rcm.dtb \
 	msm8909-pm8916-1gb-rcm.dtb \
 	msm8909-1gb-cdp.dtb \
+	apq8009-ext-codec-dragon.dtb \
 	apq8009-dragon.dtb
 
 ifeq ($(CONFIG_ARM64),y)
