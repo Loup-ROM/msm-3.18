@@ -338,7 +338,18 @@ static int AW87319_i2c_probe(struct i2c_client *client, const struct i2c_device_
 		goto exit_check_functionality_failed;
 	}
 
-		AW87319_rst = of_get_named_gpio(client->dev.of_node, "qcom,ext_pa_spk_aw87319_rst", 0);
+
+	if (client->dev.of_node != NULL)
+                AW87319_rst = of_get_named_gpio(client->dev.of_node, "qcom,ext_pa_spk_aw87319_rst", 0);
+        
+	/* bitrvmpd: Fallback to the old method.
+	 * There's no point on trying to make the above function work because 
+	 * santoni's board only has one gpio that enables the speaker. 
+	 * this gpio is 0x7c.
+	 */
+	if (AW87319_rst <= 0)
+                AW87319_rst = 0x7c;
+
 	if (AW87319_rst < 0) {
 		err = -ENODEV;
 		goto exit_gpio_get_failed;
