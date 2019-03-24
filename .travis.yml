@@ -1,3 +1,3 @@
 before_install:
 - echo "hello there"
-- apt update
+- sudo apt update
