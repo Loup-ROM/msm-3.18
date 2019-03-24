@@ -1,0 +1,3 @@
+before_install:
+- echo "hello there"
+- apt update
