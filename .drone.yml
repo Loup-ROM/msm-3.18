@@ -56,7 +56,7 @@ volumes:
 
 trigger:
   branch:
-  - f2fs-update
+  - rel/msm-3.18-nougat
   event:
   - push
 
