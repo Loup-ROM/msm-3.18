@@ -7,15 +7,12 @@ platform:
   arch: amd64
 
 steps:
-- name: Build docker image
-  build:
-    image: bitrvmpd/debian-build-kernel
-    context: .
-    dockerfile: Dockerfile
 
 - name: Sync dependencies
-  image: bitrvmpd/debian-build-kernel
+  pull: if-not-exists
+  image: bitrvmpd/debian-build
   commands:
+  - mkdir -p $LOUP_WORKING_DIR
   - cd $LOUP_WORKING_DIR
   - git clone https://github.com/bitrvmpd/aarch64-linux-android-7.x.git --depth=1
   - git clone https://github.com/bitrvmpd/AnyKernel2.git --depth=1
@@ -25,21 +22,38 @@ steps:
   volumes:
   - name: cache
     path: /usr/src
+  - name: ssh
+    path: /root/.ssh
 
 - name: Build Kernel
-  image: bitrvmpd/debian-build-kernel
+  pull: if-not-exists
+  image: bitrvmpd/debian-build
   commands:
   - chmod +x build.sh
   - ./build.sh --no-menuconfig
+  - mv $LOUP_WORKING_DIR/AnyKernel2/*.zip /usr/src/out
   environment:
     LOUP_WORKING_DIR: /usr/src
   volumes:
   - name: cache
     path: /usr/src
+  - name: output
+    path: /usr/src/out
+  - name: ssh
+    path: /root/.ssh
+
+git_config:
+  - http.PostBuffer 1048576000
 
 volumes:
 - name: cache
   temp: {}
+- name: output
+  host:
+    path: /home/wuff/projects/misc/msm-3.18
+- name: ssh
+  host:
+    path: /home/wuff/.ssh
 
 trigger:
   branch:
