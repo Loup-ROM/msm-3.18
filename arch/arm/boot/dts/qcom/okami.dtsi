@@ -11,6 +11,8 @@
  * GNU General Public License for more details.
  */
 
+//#include "okami-freq.dtsi"
+
 / {
 	//cleanup
 	/delete-node/ cpus;
@@ -224,53 +226,55 @@
 		// BIG / HIGH Power
 		CPU_COST_0: core-cost0 {
 			busy-cost-data = <
-					502	 310
-					528  348
-					767  665
-			        903  889
-			        938  1124
-			        1024 1238
+				479  310
+				480  348
+				502  665
+			        528  889
+			        767  1124
+			        903  1138
+				1024 1338
 			>;
 			idle-cost-data = <
-					0 0
+				0 0
 			>;
 		};
 		CLUSTER_COST_0: cluster-cost0 {
 			busy-cost-data = <
-				 	502	 310
-					528  348
-					767  665
-			        903  889
-			        938  1124
-			        1024 1238
+			 	479  310
+				480  348
+				502  665
+			        528  889
+			        767  1124
+			        903  1138
+				1024 1338
 			>;
 			idle-cost-data = <
-					0 0
+				0 0
 			>;
 		};	
 		//LITTLE / LOW Power
 		CPU_COST_1: core-cost1 {
 			busy-cost-data = <
-					502	 110
-					528  148
-					767  465
+				550  110
+				628  148
+				767  465
 			        903  789			       
 			>;
 			idle-cost-data = <
-					0
-					0
+				0
+				0
 			>;
 		};
 		CLUSTER_COST_1: cluster-cost1 {
 			busy-cost-data = <
-				 	502	 110
-					528  148
-					767  465
+				550  110
+				628  148
+				767  465
 			        903  789	            
 			>;
 			idle-cost-data = <
-					0
-					0
+				0
+				0
 			>;
 		};	
 	};
