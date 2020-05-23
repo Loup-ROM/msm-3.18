@@ -26,21 +26,6 @@
 		cpu-map {
 			cluster0 {
 				core0 {
-					cpu = <&CPU0>;
-				};
-				core1 {
-					cpu = <&CPU1>;
-				};
-				core2 {
-					cpu = <&CPU2>;
-				};
-				core3 {
-					cpu = <&CPU3>;
-				};
-			};
-
-			cluster1 {				
-				core0 {
 					cpu = <&CPU4>;
 				};
 				core1 {
@@ -53,15 +38,30 @@
 					cpu = <&CPU7>;
 				};
 			};
+
+			cluster1 {
+				core0 {
+					cpu = <&CPU0>;
+				};
+				core1 {
+					cpu = <&CPU1>;
+				};
+				core2 {
+					cpu = <&CPU2>;
+				};
+				core3 {
+					cpu = <&CPU3>;
+				};
+			};
 		};
 
-		CPU0: cpu@0 {
+		CPU0: cpu@100 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x0>;
+			reg = <0x100>;
 			enable-method = "psci";
 			efficiency = <1126>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L2_1: l2-cache {
@@ -80,13 +80,13 @@
 			};
 		};
 
-		CPU1: cpu@1 {
+		CPU1: cpu@101 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x1>;
+			reg = <0x101>;
 			enable-method = "psci";
 			efficiency = <1126>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L1_I_101: l1-icache {
@@ -99,13 +99,13 @@
 			};
 		};
 
-		CPU2: cpu@2 {
+		CPU2: cpu@102 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x2>;
+			reg = <0x102>;
 			enable-method = "psci";
 			efficiency = <1126>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L1_I_102: l1-icache {
@@ -118,13 +118,13 @@
 			};
 		};
 
-		CPU3: cpu@3 {
+		CPU3: cpu@103 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x3>;
+			reg = <0x103>;
 			enable-method = "psci";
 			efficiency = <1126>;
-			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
+			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
 			L1_I_103: l1-icache {
@@ -137,13 +137,13 @@
 			};
 		};
 
-		CPU4: cpu@100 {
+		CPU4: cpu@0 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x100>;
+			reg = <0x0>;
 			enable-method = "psci";
 			efficiency = <1024>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_0>;
 			#cooling-cells = <2>;
 			L2_0: l2-cache {
@@ -161,13 +161,13 @@
 			};
 		};
 
-		CPU5: cpu@101 {
+		CPU5: cpu@1 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x101>;
+			reg = <0x1>;
 			enable-method = "psci";
 			efficiency = <1024>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_0>;
 			#cooling-cells = <2>;
 			L1_I_1: l1-icache {
@@ -180,13 +180,13 @@
 			};
 		};
 
-		CPU6: cpu@102 {
+		CPU6: cpu@2 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x102>;
+			reg = <0x2>;
 			enable-method = "psci";
 			efficiency = <1024>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_0>;
 			#cooling-cells = <2>;
 			L1_I_2: l1-icache {
@@ -199,13 +199,13 @@
 			};
 		};
 
-		CPU7: cpu@103 {
+		CPU7: cpu@3 {
 			device_type = "cpu";
 			compatible = "arm,cortex-a53";
-			reg = <0x103>;
+			reg = <0x3>;
 			enable-method = "psci";
 			efficiency = <1024>;
-			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
+			sched-energy-costs = <&CPU_COST_0 &CLUSTER_COST_0>;
 			next-level-cache = <&L2_0>;
 			#cooling-cells = <2>;
 			L1_I_3: l1-icache {
