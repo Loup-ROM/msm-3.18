@@ -24,7 +24,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		cpu-map {
-			cluster0 {
+			cluster0 { //HIGH Power
 				core0 {
 					cpu = <&CPU4>;
 				};
@@ -39,7 +39,7 @@
 				};
 			};
 
-			cluster1 {
+			cluster1 { //LOW Power
 				core0 {
 					cpu = <&CPU0>;
 				};
@@ -221,55 +221,58 @@
 
 	energy_costs: energy-costs {
 		compatible = "sched-energy";
-
+		// BIG / HIGH Power
 		CPU_COST_0: core-cost0 {
 			busy-cost-data = <
-				 700000  623
-				1000000  917
-				1100000  1106
-				1250000  1432
-				1400000  1740
+					502	 310
+					528  348
+					767  665
+			        903  889
+			        938  1124
+			        1024 1238
 			>;
 			idle-cost-data = <
-				100 80 60 40
-			>;
-		};
-		CPU_COST_1: core-cost1 {
-			busy-cost-data = <
-				 500000  70
-				 800000  114
-				 900000  141
-				1000000  178
-				1100000  213
-			>;
-			idle-cost-data = <
-				40 20 10 8
+					0 0
 			>;
 		};
 		CLUSTER_COST_0: cluster-cost0 {
 			busy-cost-data = <
-				 700000  85
-				1000000  126
-				1100000  152
-				1250000  197
-				1400000  239
+				 	502	 310
+					528  348
+					767  665
+			        903  889
+			        938  1124
+			        1024 1238
 			>;
 			idle-cost-data = <
-				4 3 2 1
+					0 0
+			>;
+		};	
+		//LITTLE / LOW Power
+		CPU_COST_1: core-cost1 {
+			busy-cost-data = <
+					502	 110
+					528  148
+					767  465
+			        903  789			       
+			>;
+			idle-cost-data = <
+					0
+					0
 			>;
 		};
 		CLUSTER_COST_1: cluster-cost1 {
 			busy-cost-data = <
-				 500000  19
-				 800000  29
-				 900000  36
-				1000000  46
-				1100000  55
+				 	502	 110
+					528  148
+					767  465
+			        903  789	            
 			>;
 			idle-cost-data = <
-				4 3 2 1
+					0
+					0
 			>;
-		};
+		};	
 	};
 };
 
@@ -353,6 +356,6 @@
 	};
 
 	chosen {
-		bootargs = "kpti=1";
+		bootargs = "kpti=1 boot_cpus=0,1,2,3,4,5,6,7 sched_enable_power_aware=1";
 	};
 };
