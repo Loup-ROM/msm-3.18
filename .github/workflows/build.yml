@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the eas/msm-3.18-oreo branch
+on:
+  push:
+    branches: [ eas/msm-3.18-nougat ]
+  pull_request:
+    branches: [ eas/msm-3.18-nougat ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2 
+      
+    # Runs a set of commands using the runners shell
+    - name: Downloading dependencies
+      run: |        
+        sudo apt update
+        sudo apt install -y zip bc libssl-dev git libncurses5-dev gcc make libtinfo5
+        
+    # Runs a set of commands using the runners shell
+    - name: Downloading proton-clang, AnyKernel3 dependencies
+      run: |        
+        cd ..
+        git clone https://github.com/Loup-ROM/aarch64-linux-android-7.x.git
+        git clone https://github.com/bitrvmpd/AnyKernel3.git --depth=1
+        sudo ln -s /usr/lib/x86_64-linux-gnu/libmpfr.so.6 /usr/lib/x86_64-linux-gnu/libmpfr.so.4
+        
+    - name: Start compilation
+      run: |
+        ./build.sh -no-menuconfig || true
+        echo "Running again, because of this weird bug of clang"
+        ./build.sh -no-menuconfig
+        
+    - uses: actions/upload-artifact@v2
+      with:
+        path: /home/runner/work/msm-3.18/AnyKernel3/*.zip
