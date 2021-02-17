@@ -32,14 +32,14 @@ jobs:
     - name: Downloading proton-clang, AnyKernel3 dependencies
       run: |        
         cd ..
-        git clone https://github.com/kdrag0n/proton-clang.git --depth=1
+        git clone https://github.com/Loup-ROM/aarch64-linux-android-7.x.git
         git clone https://github.com/bitrvmpd/AnyKernel3.git --depth=1
         
     - name: Start compilation
       run: |
-        ./build-clang.sh -no-menuconfig || true
+        ./build.sh -no-menuconfig || true
         echo "Running again, because of this weird bug of clang"
-        ./build-clang.sh -no-menuconfig
+        ./build.sh -no-menuconfig
         
     - uses: actions/upload-artifact@v2
       with:
