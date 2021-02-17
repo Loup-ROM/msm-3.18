@@ -62,7 +62,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x100>;
 			enable-method = "psci";
-			efficiency = <1126>;
+			efficiency = <1019>;
 			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
@@ -87,7 +87,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x101>;
 			enable-method = "psci";
-			efficiency = <1126>;
+			efficiency = <1019>;
 			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
@@ -106,7 +106,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x102>;
 			enable-method = "psci";
-			efficiency = <1126>;
+			efficiency = <1019>;
 			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
@@ -125,7 +125,7 @@
 			compatible = "arm,cortex-a53";
 			reg = <0x103>;
 			enable-method = "psci";
-			efficiency = <1126>;
+			efficiency = <1019>;
 			sched-energy-costs = <&CPU_COST_1 &CLUSTER_COST_1>;
 			next-level-cache = <&L2_1>;
 			#cooling-cells = <2>;
@@ -226,43 +226,39 @@
 		// BIG / HIGH Power
 		CPU_COST_0: core-cost0 {
 			busy-cost-data = <
-				479  310
-				480  348
-				502  665
-			        528  889
-			        767  1124
-			        903  1138
-				1024 1338
-			>;
-			idle-cost-data = <
-				0 0
+				  700  144
+ 				  800  276
+ 				  909  371
+ 				  982  436
+ 				 1024  259
+					>;
+ 			idle-cost-data = <
+				3 2 1
 			>;
 		};
+
 		CLUSTER_COST_0: cluster-cost0 {
 			busy-cost-data = <
-			 	479  310
-				480  348
-				502  665
-			        528  889
-			        767  1124
-			        903  1138
-				1024 1338
+                                  700  144
+                                  800  276
+                                  909  371
+                                  982  436
+                                 1024  259
 			>;
 			idle-cost-data = <
-				0 0
+				3 2 1
 			>;
 		};	
 		//LITTLE / LOW Power
 		CPU_COST_1: core-cost1 {
 			busy-cost-data = <
-				550  110
-				628  148
-				767  465
-			        903  789			       
+			 	  561  136
+ 				  656  210
+ 				  724  194
+ 				  797  342
 			>;
 			idle-cost-data = <
-				0
-				0
+				3 2 1		
 			>;
 		};
 		CLUSTER_COST_1: cluster-cost1 {
@@ -273,8 +269,7 @@
 			        903  789	            
 			>;
 			idle-cost-data = <
-				0
-				0
+				3 2 1				
 			>;
 		};	
 	};
