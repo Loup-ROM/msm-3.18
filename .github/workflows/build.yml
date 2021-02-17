@@ -34,6 +34,7 @@ jobs:
         cd ..
         git clone https://github.com/Loup-ROM/aarch64-linux-android-7.x.git
         git clone https://github.com/bitrvmpd/AnyKernel3.git --depth=1
+	sudo ln -s /usr/lib/x86_64-linux-gnu/libmpfr.so.6 /usr/lib/x86_64-linux-gnu/libmpfr.so.4
         
     - name: Start compilation
       run: |
