@@ -44,4 +44,4 @@ jobs:
         
     - uses: actions/upload-artifact@v2
       with:
-        path: /home/runner/work/okami_v3/AnyKernel3/*.zip
+        path: /home/runner/work/msm-3.18/AnyKernel3/*.zip
